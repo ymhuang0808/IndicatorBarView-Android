@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <bool name="default_is_multiple_level_colors">false</bool>
+    <bool name="default_is_pin_color_with_bar_color">true</bool>
+</resources>
