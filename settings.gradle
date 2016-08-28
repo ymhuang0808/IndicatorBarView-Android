@@ -1,0 +1,1 @@
+include ':indicatorviewbar-android-sample', ':indicatorviewbar-android-library'
