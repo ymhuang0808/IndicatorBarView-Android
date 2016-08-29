@@ -1,10 +1,14 @@
 package tw.fmbase.app.indicatorviewbar_android;
 
+import android.annotation.TargetApi;
 import android.content.Context;
 import android.content.res.TypedArray;
 import android.graphics.Canvas;
 import android.graphics.Color;
+import android.os.Build;
+import android.support.annotation.RequiresApi;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.util.TypedValue;
 import android.view.View;
 
@@ -57,30 +61,48 @@ public class IndicatorBar extends View {
     protected void onDraw(Canvas canvas) {
         super.onDraw(canvas);
 
-        createSingleColorBar();
-
+        initBar();
+        
         mBar.draw(canvas);
     }
 
     public IndicatorBar(Context context, AttributeSet attrs) {
         super(context, attrs);
+        initIndicatorBar(context, attrs);
+    }
 
+
+    public IndicatorBar(Context context) {
+        super(context);
+    }
+
+    public IndicatorBar(Context context, AttributeSet attrs, int defStyleAttr) {
+        super(context, attrs, defStyleAttr);
+        initIndicatorBar(context, attrs);
+    }
+
+    @TargetApi(Build.VERSION_CODES.LOLLIPOP)
+    public IndicatorBar(Context context, AttributeSet attrs, int defStyleAttr, int defStyleRes) {
+        super(context, attrs, defStyleAttr, defStyleRes);
+        initIndicatorBar(context, attrs);
+    }
+
+    private void initIndicatorBar(Context context, AttributeSet attributeSet) {
         TypedArray typedArray = context.getTheme().obtainStyledAttributes(
-                attrs,
+                attributeSet,
                 R.styleable.IndicatorBar,
                 0,
                 0);
 
-        initIndicatorBar(context, typedArray);
-    }
-
-    private void initIndicatorBar(Context context, TypedArray typedArray) {
+        // Get default bar height
         final float DEFAULT_HEIGHT_PX = TypedValue.applyDimension(
                 TypedValue.COMPLEX_UNIT_DIP,
                 DEFAULT_BAR_HEIGHT_DP,
                 context.getResources().getDisplayMetrics()
         );
 
+        // Get the values of the attributes.
+        // If the attributes are not set, it will get default values
         mMinValue = typedArray.getInt(R.styleable.IndicatorBar_minValue, DEFAULT_MIN_VALUE);
         mMaxValue = typedArray.getInt(R.styleable.IndicatorBar_maxValue, DEFAULT_MAX_VALUE);
         mBarHeightPx = typedArray.getDimension(
@@ -120,6 +142,23 @@ public class IndicatorBar extends View {
         }
     }
 
+    @Override
+    public void setEnabled(boolean enabled) {
+        if (enabled) {
+            initBar();
+        }
+
+        super.setEnabled(enabled);
+    }
+
+    private void initBar() {
+        if (mIsMultipleLevelColors) {
+            createMultColorsBar();
+        } else {
+            createSingleColorBar();
+        }
+    }
+
     private void createSingleColorBar() {
         mBar = new Bar(getContext(),
                 getMarginLeft(),
@@ -129,7 +168,7 @@ public class IndicatorBar extends View {
                 mBarColor
                 );
 
-        invalidate();
+//        invalidate();
     }
 
     private void createMultColorsBar() {
@@ -141,7 +180,7 @@ public class IndicatorBar extends View {
                 mBarLevelColors
         );
 
-        invalidate();
+//        invalidate();
     }
 
     private float getMarginLeft() {
@@ -149,7 +188,15 @@ public class IndicatorBar extends View {
     }
 
     private float getYPosition() {
-        return (getHeight() - getResources().getDimensionPixelSize(R.dimen.default_bar_padding_bottom));
+        float defaultPaddingBottomPx = getResources()
+                .getDimensionPixelSize(R.dimen.default_bar_padding_bottom);
+        float yPosition = getHeight() - defaultPaddingBottomPx;
+
+        Log.d(TAG, "getHeight() = " + getHeight());
+        Log.d(TAG, "defaultPaddingBottomPx = " + defaultPaddingBottomPx);
+        Log.d(TAG, "yPosition = " + yPosition);
+
+        return yPosition;
     }
 
     private float getBarHeightDp() {

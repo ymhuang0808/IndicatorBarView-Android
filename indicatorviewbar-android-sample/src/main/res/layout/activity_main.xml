@@ -12,8 +12,9 @@
 
     <tw.fmbase.app.indicatorviewbar_android.IndicatorBar
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="25dp"
         indicatorbar:minValue="0"
         indicatorbar:maxValue="100"
-        indicatorbar:barHeight="10dp" />
+        indicatorbar:barHeight="10dp"
+        indicatorbar:isMultipleLevelColors="true"/>
 </RelativeLayout>
