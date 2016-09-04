@@ -20,6 +20,9 @@ android {
     }
     productFlavors {
     }
+    defaultConfig {
+        vectorDrawables.useSupportLibrary = true
+    }
 }
 
 dependencies {
