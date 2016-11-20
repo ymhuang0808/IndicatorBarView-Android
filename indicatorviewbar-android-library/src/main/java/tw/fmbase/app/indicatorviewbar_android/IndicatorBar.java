@@ -8,6 +8,7 @@ import android.graphics.Color;
 import android.os.Build;
 import android.support.annotation.RequiresApi;
 import android.util.AttributeSet;
+import android.util.DisplayMetrics;
 import android.util.Log;
 import android.util.TypedValue;
 import android.view.View;
@@ -24,6 +25,8 @@ public class IndicatorBar extends View {
     private static final int DEFAULT_MIN_VALUE = 0;
 
     private static final int DEFAULT_MAX_VALUE = 100;
+
+    private static final int DEFAULT_VALUE = 0;
 
     private static final float DEFAULT_BAR_HEIGHT_DP = 3;
 
@@ -43,6 +46,8 @@ public class IndicatorBar extends View {
 
     private int mMaxValue;
 
+    private int mValue;
+
     private float mBarHeightPx;
 
     private boolean mIsMultipleLevelColors;
@@ -59,14 +64,16 @@ public class IndicatorBar extends View {
 
     private Pin mPin;
 
+    private DisplayMetrics mDisplayMetrics;
+
     @Override
     protected void onDraw(Canvas canvas) {
         super.onDraw(canvas);
 
-//        initBar();
+        initBar();
         createPin();
 
-//        mBar.draw(canvas);
+        mBar.draw(canvas);
         mPin.draw(canvas);
     }
 
@@ -101,6 +108,7 @@ public class IndicatorBar extends View {
     }
 
     private void initIndicatorBar(Context context, AttributeSet attributeSet) {
+        mDisplayMetrics = context.getResources().getDisplayMetrics();
         TypedArray typedArray = context.getTheme().obtainStyledAttributes(
                 attributeSet,
                 R.styleable.IndicatorBar,
@@ -154,6 +162,8 @@ public class IndicatorBar extends View {
                     );
                 }
             }
+
+            mValue = typedArray.getInt(R.styleable.IndicatorBar_value, DEFAULT_VALUE);
         } finally {
             typedArray.recycle();
         }
@@ -178,30 +188,37 @@ public class IndicatorBar extends View {
 
     private void createSingleColorBar() {
         mBar = new Bar(getContext(),
-                getMarginLeft(),
+                getX() + getMarginLeft(),
                 getYPosition(),
                 getBarLength(),
-                getBarHeightDp(),
+                getBarHeightPx(),
                 mBarColor
                 );
     }
 
     private void createMultColorsBar() {
         mBar = new Bar(getContext(),
-                getMarginLeft(),
+                getX() + getMarginLeft(),
                 getYPosition(),
                 getBarLength(),
-                getBarHeightDp(),
+                getBarHeightPx(),
                 mBarLevelColors
         );
     }
 
     private void createPin() {
-        mPin = new Pin(getContext(), mPinColor, 0, 0);
+        Log.d(TAG, "getYPosition() = " + getYPosition());
+        Log.d(TAG, "getBarHeightPx()() = " + getBarHeightPx());
+
+        mPin = new Pin(getContext(), mPinColor, transformValueToPx(), getYPosition() - getBarHeightPx());
     }
 
     private float getMarginLeft() {
-        return 0;
+        return TypedValue.applyDimension(
+                TypedValue.COMPLEX_UNIT_DIP,
+                Pin.DEFAULT_RECTANGLE_WIDTH_DP,
+                mDisplayMetrics
+        ) / 2;
     }
 
     private float getYPosition() {
@@ -216,11 +233,20 @@ public class IndicatorBar extends View {
         return yPosition;
     }
 
-    private float getBarHeightDp() {
+    private float getBarHeightPx() {
         return mBarHeightPx;
     }
 
     private float getBarLength() {
-        return getWidth() - getMarginLeft() * 2;
+        return getWidth() - (getMarginLeft() * 2);
+    }
+
+    private float transformValueToPx() {
+        float scale = ((mMaxValue - mMinValue)) / getBarLength();
+
+        Log.d(TAG, "scale = " + scale);
+        Log.d(TAG, "mValue = " + mValue);
+
+        return (mValue / scale) + getX() + getMarginLeft();
     }
 }

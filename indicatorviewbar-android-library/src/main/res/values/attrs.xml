@@ -6,6 +6,8 @@
 
         <attr name="maxValue" format="integer" />
 
+        <attr name="value" format="integer" />
+
         <attr name="barHeight" format="dimension" />
         
         <attr name="isMultipleLevelColors" format="boolean" />

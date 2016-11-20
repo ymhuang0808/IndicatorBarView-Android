@@ -73,6 +73,8 @@ public class Bar {
         mY = y;
         mColors = colors;
 
+        Log.d(TAG, "mLeftX = " + mLeftX);
+
         createPaints(heightPx);
     }
 
