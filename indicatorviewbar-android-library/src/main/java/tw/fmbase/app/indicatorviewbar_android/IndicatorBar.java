@@ -83,7 +83,7 @@ public class IndicatorBar extends View {
         super(context, attrs);
 
         if (!isInEditMode()) {
-            initIndicatorBar(context, attrs);
+            init(context, attrs);
         }
     }
 
@@ -96,7 +96,7 @@ public class IndicatorBar extends View {
         super(context, attrs, defStyleAttr);
 
         if (!isInEditMode()) {
-            initIndicatorBar(context, attrs);
+            init(context, attrs);
         }
     }
 
@@ -105,7 +105,7 @@ public class IndicatorBar extends View {
         super(context, attrs, defStyleAttr, defStyleRes);
 
         if (!isInEditMode()) {
-            initIndicatorBar(context, attrs);
+            init(context, attrs);
         }
     }
 
@@ -117,7 +117,7 @@ public class IndicatorBar extends View {
      * @param context
      * @param attributeSet
      */
-    private void initIndicatorBar(Context context, AttributeSet attributeSet) {
+    private void init(Context context, AttributeSet attributeSet) {
         mDisplayMetrics = context.getResources().getDisplayMetrics();
         TypedArray typedArray = context.getTheme().obtainStyledAttributes(
                 attributeSet,
