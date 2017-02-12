@@ -15,7 +15,7 @@
         android:layout_height="100dp"
         indicatorbar:minValue="0"
         indicatorbar:maxValue="100"
-        indicatorbar:value="10"
+        indicatorbar:value="0"
         indicatorbar:barHeight="10dp"
         indicatorbar:isMultipleLevelColors="true"/>
 </RelativeLayout>

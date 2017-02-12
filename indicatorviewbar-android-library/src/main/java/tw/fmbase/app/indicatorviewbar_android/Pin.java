@@ -18,7 +18,7 @@ public class Pin {
     // Default values
     public final static int DEFAULT_RECTANGLE_WIDTH_DP = 50;
 
-    public final static int DEFAULT_RECTANGLE_HEIGHT_DP = 40;
+    public final static int DEFAULT_RECTANGLE_HEIGHT_DP = 50;
 
     public final static int DEFAULT_TOP_OFFSET = 8;
 
@@ -32,34 +32,40 @@ public class Pin {
 
     private float mX;
 
-    public Pin(Context context, int color, float x, float y) {
-        Log.d(TAG, "x = " + x);
-        Log.d(TAG, "y = " + y);
+    private Paint mRectanglePaint;
 
+    private Paint mTrianglePaint;
+
+    public Pin(Context context, int color, float x, float y) {
         mX = x;
         mY = y;
 
         init(context, color);
-
-        Log.d(TAG, "Pin()");
-        Log.d(TAG, "mX = " + mX);
-        Log.d(TAG, "mY = " + mY);
     }
 
     public void draw(Canvas canvas) {
         drawRectangle(canvas);
         drawTriangle(canvas);
-
-        Log.d(TAG, "draw()");
     }
 
     public void setColor(int color) {
-        // TODO: set the color into mColor and re-render
+        // @TODO: set the color into mColor and re-render
+        mColor = color;
     }
 
     private void init(Context context, int color) {
         mDisplayMetrics = context.getResources().getDisplayMetrics();
         mColor = color;
+
+        // Initialize a Paint instance for drawing rectangle
+        mRectanglePaint = new Paint();
+        mRectanglePaint.setColor(mColor);
+        mRectanglePaint.setStyle(Paint.Style.FILL);
+
+        // Initialize a Paint instance for drawing triangle
+        mTrianglePaint = new Paint();
+        mTrianglePaint.setColor(mColor);
+        mTrianglePaint.setStyle(Paint.Style.FILL);
 
         mY += getTopOffset();
 
@@ -67,30 +73,15 @@ public class Pin {
     }
 
     private void drawRectangle(Canvas canvas) {
-        Paint paint = new Paint();
-
-        paint.setColor(Color.BLACK);
-        paint.setStyle(Paint.Style.FILL);
-//        paint.setAntiAlias(true);
-
         float left = getRectangleLeft();
         float top = getRectangleTop();
         float right = getRectangleRight();
         float bottom = getRectangleBottom();
 
-        Log.d(TAG, "left = " + left);
-        Log.d(TAG, "top = " + top);
-        Log.d(TAG, "right = " + right);
-        Log.d(TAG, "bottom = " + bottom);
-
-        canvas.drawRect(left, top, right, bottom, paint);
+        canvas.drawRect(left, top, right, bottom, mRectanglePaint);
     }
 
     private void drawTriangle(Canvas canvas) {
-        Paint paint = new Paint();
-        paint.setColor(Color.BLACK);
-        paint.setStyle(Paint.Style.FILL);
-
         float eachSegmentLength = getWidthPx() / 6;
         float leftTopX = mX - eachSegmentLength;
         float rightTopX = mX + eachSegmentLength;
@@ -104,7 +95,7 @@ public class Pin {
         path.lineTo(bottomX, bottomY);
         path.close();
 
-        canvas.drawPath(path, paint);
+        canvas.drawPath(path, mTrianglePaint);
     }
 
     private float getWidthPx() {

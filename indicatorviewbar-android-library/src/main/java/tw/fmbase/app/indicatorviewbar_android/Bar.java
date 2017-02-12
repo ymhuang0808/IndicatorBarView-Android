@@ -58,7 +58,6 @@ public class Bar {
             canvas.drawLine(leftX, mY, rightX, mY, mPaints[index]);
 
             leftX += eachSegmentLength;
-
         }
     }
 
@@ -90,5 +89,13 @@ public class Bar {
             mPaints[i].setStrokeWidth(heightPx);
             mPaints[i].setAntiAlias(true);
         }
+    }
+
+    public void setLength(float length) {
+        mLength = length;
+    }
+
+    public float getLength() {
+        return mLength;
     }
 }

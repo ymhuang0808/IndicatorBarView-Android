@@ -6,7 +6,6 @@ import android.content.res.TypedArray;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.os.Build;
-import android.support.annotation.RequiresApi;
 import android.util.AttributeSet;
 import android.util.DisplayMetrics;
 import android.util.Log;
@@ -77,6 +76,12 @@ public class IndicatorBar extends View {
         mPin.draw(canvas);
     }
 
+    /**
+     * Constructor for setting attributes
+     *
+     * @param context
+     * @param attrs
+     */
     public IndicatorBar(Context context, AttributeSet attrs) {
         super(context, attrs);
 
@@ -107,6 +112,14 @@ public class IndicatorBar extends View {
         }
     }
 
+    /**
+     * Initialize the indicator bar
+     *
+     * It helps assigning the attributes into global properties
+     *
+     * @param context
+     * @param attributeSet
+     */
     private void initIndicatorBar(Context context, AttributeSet attributeSet) {
         mDisplayMetrics = context.getResources().getDisplayMetrics();
         TypedArray typedArray = context.getTheme().obtainStyledAttributes(
@@ -180,15 +193,18 @@ public class IndicatorBar extends View {
 
     private void initBar() {
         if (mIsMultipleLevelColors) {
-            createMultColorsBar();
+            createMultiColorsBar();
         } else {
             createSingleColorBar();
         }
     }
 
+    /**
+     * Create a single color bar
+     */
     private void createSingleColorBar() {
         mBar = new Bar(getContext(),
-                getX() + getMarginLeft(),
+                getMarginLeft(),
                 getYPosition(),
                 getBarLength(),
                 getBarHeightPx(),
@@ -196,23 +212,43 @@ public class IndicatorBar extends View {
                 );
     }
 
-    private void createMultColorsBar() {
-        mBar = new Bar(getContext(),
-                getX() + getMarginLeft(),
-                getYPosition(),
-                getBarLength(),
-                getBarHeightPx(),
-                mBarLevelColors
-        );
+    @Override
+    protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
+        super.onMeasure(widthMeasureSpec, heightMeasureSpec);
     }
 
+    /**
+     * Create a multiple colors bar
+     */
+    private void createMultiColorsBar() {
+        Context context = getContext();
+        float xPosition = getMarginLeft() + getPaddingLeft();
+        float yPosition = getYPosition();
+        float length = getBarLength();
+        float height = getBarHeightPx();
+
+        mBar = new Bar(context, xPosition, yPosition, length, height, mBarLevelColors);
+    }
+
+    /**
+     * Create a Pin object
+     */
     private void createPin() {
         Log.d(TAG, "getYPosition() = " + getYPosition());
         Log.d(TAG, "getBarHeightPx()() = " + getBarHeightPx());
 
-        mPin = new Pin(getContext(), mPinColor, transformValueToPx(), getYPosition() - getBarHeightPx());
+        float xPosition = transformValueToPx();
+        float yPosition = getYPosition() - getBarHeightPx();
+        mPinColor = getPinColorByValue();
+
+        mPin = new Pin(getContext(), mPinColor, xPosition, yPosition);
     }
 
+    /**
+     * Calculating the margin left distance
+     *
+     * @return
+     */
     private float getMarginLeft() {
         return TypedValue.applyDimension(
                 TypedValue.COMPLEX_UNIT_DIP,
@@ -224,7 +260,7 @@ public class IndicatorBar extends View {
     private float getYPosition() {
         float defaultPaddingBottomPx = getResources()
                 .getDimensionPixelSize(R.dimen.default_bar_padding_bottom);
-        float yPosition = getHeight() - defaultPaddingBottomPx;
+        float yPosition = getHeight() - defaultPaddingBottomPx - getPaddingTop() - getPaddingBottom();
 
         Log.d(TAG, "getHeight() = " + getHeight());
         Log.d(TAG, "defaultPaddingBottomPx = " + defaultPaddingBottomPx);
@@ -238,15 +274,40 @@ public class IndicatorBar extends View {
     }
 
     private float getBarLength() {
-        return getWidth() - (getMarginLeft() * 2);
+        float marginLeft = getMarginLeft();
+        float paddingLeft = getPaddingLeft();
+        float paddingRight = getPaddingRight();
+        int width = getMeasuredWidth();
+
+        return width - (marginLeft * 2) - paddingLeft - paddingRight;
     }
 
     private float transformValueToPx() {
         float scale = ((mMaxValue - mMinValue)) / getBarLength();
 
-        Log.d(TAG, "scale = " + scale);
-        Log.d(TAG, "mValue = " + mValue);
-
-        return (mValue / scale) + getX() + getMarginLeft();
+        return (mValue / scale) + getMarginLeft();
     }
+
+    /**
+     * Get the pin color by value
+     * @return
+     */
+    private int getPinColorByValue() {
+        int color = 0;
+
+        if (mIsMultipleLevelColors) {
+            int segmentNumber = mBarLevelColors.length;
+            int base = (mMaxValue - mMinValue) / segmentNumber;
+            int segment = mValue / base;
+
+            if (segment > segmentNumber - 1) {
+                segment = segmentNumber - 1;
+            }
+
+            color = mBarLevelColors[segment];
+        }
+
+        return color;
+    }
+
 }
