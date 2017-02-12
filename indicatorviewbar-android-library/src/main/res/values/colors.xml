@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="default_bar_color">#2196F3</color>
+    <color name="default_green">#4CAF50</color>
+    <color name="default_yellow">#FFC107</color>
+    <color name="default_red">#FF5722</color>
+    <color name="default_purple">#9C27B0</color>
+    
+    <array name="default_bar_leve_colors">
+        <item>@color/default_green</item>
+        <item>@color/default_yellow</item>
+        <item>@color/default_red</item>
+        <item>@color/default_purple</item>
+    </array>
+</resources>
