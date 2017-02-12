@@ -22,6 +22,8 @@ public class Pin {
 
     public final static int DEFAULT_TOP_OFFSET = 8;
 
+    public final static int TEXT_FONT_SIZE = 14;
+
     // Members
 
     private int mColor;
@@ -32,15 +34,28 @@ public class Pin {
 
     private float mX;
 
+    private String mText = "";
+
     private Paint mRectanglePaint;
 
     private Paint mTrianglePaint;
 
-    public Pin(Context context, int color, float x, float y) {
-        mX = x;
-        mY = y;
+    private Paint mTextPaint;
 
+    public Pin(Context context, int color) {
         init(context, color);
+    }
+
+    public void setX(float x) {
+        mX = x;
+    }
+
+    public void setY(float y) {
+        mY = y + getTopOffset();
+    }
+
+    public void setText(String text) {
+        mText = text;
     }
 
     public void draw(Canvas canvas) {
@@ -67,11 +82,18 @@ public class Pin {
         mTrianglePaint.setColor(mColor);
         mTrianglePaint.setStyle(Paint.Style.FILL);
 
-        mY += getTopOffset();
+        // Initialize a Paint instance for drawing triangle
+        mTextPaint = new Paint();
+        mTextPaint.setColor(Color.WHITE);
+        mTextPaint.setStyle(Paint.Style.FILL);
 
         Log.d(TAG, "Pin color = " + String.format("#%06X", (0xFFFFFF & mColor)));
     }
 
+    /**
+     * Draw a rectangle on the Pin
+     * @param canvas
+     */
     private void drawRectangle(Canvas canvas) {
         float left = getRectangleLeft();
         float top = getRectangleTop();
@@ -81,6 +103,10 @@ public class Pin {
         canvas.drawRect(left, top, right, bottom, mRectanglePaint);
     }
 
+    /**
+     * Draw a triangle on the Pin
+     * @param canvas
+     */
     private void drawTriangle(Canvas canvas) {
         float eachSegmentLength = getWidthPx() / 6;
         float leftTopX = mX - eachSegmentLength;
@@ -96,6 +122,10 @@ public class Pin {
         path.close();
 
         canvas.drawPath(path, mTrianglePaint);
+    }
+
+    private void drawText(Canvas canvas) {
+
     }
 
     private float getWidthPx() {

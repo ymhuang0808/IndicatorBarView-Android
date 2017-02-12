@@ -69,11 +69,8 @@ public class IndicatorBar extends View {
     protected void onDraw(Canvas canvas) {
         super.onDraw(canvas);
 
-        initBar();
-        createPin();
-
-        mBar.draw(canvas);
-        mPin.draw(canvas);
+        drawBar(canvas);
+        drawPin(canvas);
     }
 
     /**
@@ -180,13 +177,15 @@ public class IndicatorBar extends View {
         } finally {
             typedArray.recycle();
         }
+
+        initBar();
+        createPin();
     }
 
     @Override
     public void setEnabled(boolean enabled) {
-        if (enabled) {
-            initBar();
-        }
+        initBar();
+        createPin();
 
         super.setEnabled(enabled);
     }
@@ -199,22 +198,19 @@ public class IndicatorBar extends View {
         }
     }
 
+    @Override
+    protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
+        super.onMeasure(widthMeasureSpec, heightMeasureSpec);
+    }
+
     /**
      * Create a single color bar
      */
     private void createSingleColorBar() {
-        mBar = new Bar(getContext(),
-                getMarginLeft(),
-                getYPosition(),
-                getBarLength(),
-                getBarHeightPx(),
-                mBarColor
-                );
-    }
+        Context context = getContext();
+        float height = getBarHeightPx();
 
-    @Override
-    protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
-        super.onMeasure(widthMeasureSpec, heightMeasureSpec);
+        mBar = new Bar(context, height, mBarColor);
     }
 
     /**
@@ -222,26 +218,43 @@ public class IndicatorBar extends View {
      */
     private void createMultiColorsBar() {
         Context context = getContext();
-        float xPosition = getMarginLeft() + getPaddingLeft();
-        float yPosition = getYPosition();
-        float length = getBarLength();
         float height = getBarHeightPx();
 
-        mBar = new Bar(context, xPosition, yPosition, length, height, mBarLevelColors);
+        mBar = new Bar(context, height, mBarLevelColors);
+    }
+
+    /**
+     * Prepare the properties and draw the Bar
+     */
+    private void drawBar(Canvas canvas) {
+        float startX = getMarginLeft() + getPaddingLeft();
+        float yPosition = getYPosition();
+        float length = getBarLength();
+
+        mBar.setStartX(startX);
+        mBar.setY(yPosition);
+        mBar.setLength(length);
+
+        mBar.draw(canvas);
     }
 
     /**
      * Create a Pin object
      */
     private void createPin() {
-        Log.d(TAG, "getYPosition() = " + getYPosition());
-        Log.d(TAG, "getBarHeightPx()() = " + getBarHeightPx());
-
-        float xPosition = transformValueToPx();
-        float yPosition = getYPosition() - getBarHeightPx();
         mPinColor = getPinColorByValue();
 
-        mPin = new Pin(getContext(), mPinColor, xPosition, yPosition);
+        mPin = new Pin(getContext(), mPinColor);
+    }
+
+    private void drawPin(Canvas canvas) {
+        float x = transformValueToPx();
+        float y = getYPosition() - getBarHeightPx();
+
+        mPin.setX(x);
+        mPin.setY(y);
+
+        mPin.draw(canvas);
     }
 
     /**
@@ -277,7 +290,7 @@ public class IndicatorBar extends View {
         float marginLeft = getMarginLeft();
         float paddingLeft = getPaddingLeft();
         float paddingRight = getPaddingRight();
-        int width = getMeasuredWidth();
+        int width = getWidth();
 
         return width - (marginLeft * 2) - paddingLeft - paddingRight;
     }
