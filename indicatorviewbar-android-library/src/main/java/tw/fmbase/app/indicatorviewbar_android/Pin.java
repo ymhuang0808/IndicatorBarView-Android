@@ -8,9 +8,7 @@ import android.graphics.Path;
 import android.util.DisplayMetrics;
 import android.util.Log;
 import android.util.TypedValue;
-/**
- * Created by aming on 2016/8/29.
- */
+
 public class Pin {
 
     private static final String TAG = Pin.class.getName();
@@ -21,8 +19,6 @@ public class Pin {
     public final static int DEFAULT_RECTANGLE_HEIGHT_DP = 50;
 
     public final static int DEFAULT_TOP_OFFSET = 8;
-
-    public final static int TEXT_FONT_SIZE = 14;
 
     // Members
 
@@ -60,6 +56,7 @@ public class Pin {
 
     public void draw(Canvas canvas) {
         drawRectangle(canvas);
+        drawText(canvas);
         drawTriangle(canvas);
     }
 
@@ -85,7 +82,8 @@ public class Pin {
         // Initialize a Paint instance for drawing triangle
         mTextPaint = new Paint();
         mTextPaint.setColor(Color.WHITE);
-        mTextPaint.setStyle(Paint.Style.FILL);
+        mTextPaint.setTextAlign(Paint.Align.CENTER);
+        mTextPaint.setStrokeWidth(3);
 
         Log.d(TAG, "Pin color = " + String.format("#%06X", (0xFFFFFF & mColor)));
     }
@@ -125,7 +123,11 @@ public class Pin {
     }
 
     private void drawText(Canvas canvas) {
+        int xOffset = (int) (getRectangleWidth() / 2);
+        int yOffset = (int) (getRectangleHeight() * 0.3);
 
+        mTextPaint.setTextSize(getTextFontSize());
+        canvas.drawText(mText, getRectangleLeft() + xOffset , getRectangleBottom() - yOffset, mTextPaint);
     }
 
     private float getWidthPx() {
@@ -170,5 +172,20 @@ public class Pin {
         float segment = getWidthPx() / 2;
 
         return mX + segment;
+    }
+
+    private float getRectangleHeight() {
+        return getRectangleBottom() - getRectangleTop();
+    }
+
+    private float getRectangleWidth() {
+        return getRectangleRight() - getRectangleLeft();
+    }
+
+    private int getTextFontSize() {
+        float rectangleHeight = getRectangleHeight();
+        int fontSize = (int) (rectangleHeight * 0.5);
+
+        return fontSize;
     }
 }

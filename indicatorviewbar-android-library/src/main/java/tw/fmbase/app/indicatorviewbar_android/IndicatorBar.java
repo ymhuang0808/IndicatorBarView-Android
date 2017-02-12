@@ -12,9 +12,6 @@ import android.util.Log;
 import android.util.TypedValue;
 import android.view.View;
 
-/**
- * Created by aming on 2016/8/28.
- */
 public class IndicatorBar extends View {
 
     private static final String TAG = IndicatorBar.class.getName();
@@ -253,6 +250,7 @@ public class IndicatorBar extends View {
 
         mPin.setX(x);
         mPin.setY(y);
+        mPin.setText(String.valueOf(mValue));
 
         mPin.draw(canvas);
     }
