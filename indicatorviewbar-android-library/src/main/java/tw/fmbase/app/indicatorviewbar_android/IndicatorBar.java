@@ -201,6 +201,22 @@ public class IndicatorBar extends View {
     }
 
     /**
+     * Setting the displaying value in indicator bar
+     *
+     * @param value
+     */
+    public void setValue(int value) {
+        mValue = value;
+
+        // Re-calculate the color of pin
+        mPin.setColor(getPinColorByValue());
+
+        // Re-render the pin
+        // TODO: Only invalidate certain area
+        invalidate();
+    }
+
+    /**
      * Create a single color bar
      */
     private void createSingleColorBar() {

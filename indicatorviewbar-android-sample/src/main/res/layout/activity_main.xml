@@ -11,11 +11,29 @@
     tools:context="tw.fmbase.app.indicatorbarview_android.MainActivity">
 
     <tw.fmbase.app.indicatorviewbar_android.IndicatorBar
+        android:id="@+id/indicator_bar"
         android:layout_width="match_parent"
         android:layout_height="100dp"
         indicatorbar:minValue="0"
         indicatorbar:maxValue="100"
         indicatorbar:value="55"
         indicatorbar:barHeight="10dp"
-        indicatorbar:isMultipleLevelColors="true"/>
+        indicatorbar:isMultipleLevelColors="true"
+        android:layout_above="@id/indicator_bar"/>
+
+    <NumberPicker
+        android:id="@+id/value_picker"
+        android:layout_width="300dp"
+        android:layout_height="130dp"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="15dp"
+        android:layout_below="@id/indicator_bar"></NumberPicker>
+
+    <Button
+        android:id="@+id/set_value_btn"
+        android:layout_width="300dp"
+        android:layout_height="80dp"
+        android:text="@string/click"
+        android:layout_centerHorizontal="true"
+        android:layout_below="@id/value_picker"/>
 </RelativeLayout>

@@ -63,6 +63,8 @@ public class Pin {
     public void setColor(int color) {
         // @TODO: set the color into mColor and re-render
         mColor = color;
+        mRectanglePaint.setColor(mColor);
+        mTrianglePaint.setColor(mColor);
     }
 
     private void init(Context context, int color) {
