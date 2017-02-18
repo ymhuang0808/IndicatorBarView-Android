@@ -4,6 +4,8 @@
 
 The IndicatorBarView-Android displays value on the pin with corresponding location on the bar.
 
+![Screenshot](https://github.com/ymhuang0808/IndicatorBarView-Android/blob/develop/screenshots/Screenshot_20160218_001.png)
+
 The example project is in _indicatorviewbar-android-sample/_ directory
 
 ## Example code
